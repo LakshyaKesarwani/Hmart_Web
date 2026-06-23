@@ -45,6 +45,12 @@ export async function ProductDetailSummary({
           <div className="flex flex-wrap gap-3">
             <Link
               className="inline-flex h-10 items-center justify-center rounded-md border border-zinc-300 px-4 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50"
+              href={`/admin/products/${product.id}/variants`}
+            >
+              Manage variants
+            </Link>
+            <Link
+              className="inline-flex h-10 items-center justify-center rounded-md border border-zinc-300 px-4 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50"
               href={`/admin/products/${product.id}/images`}
             >
               Manage images
