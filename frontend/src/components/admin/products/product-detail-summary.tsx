@@ -42,12 +42,20 @@ export async function ProductDetailSummary({
               {product.brand ?? "No brand assigned"}
             </p>
           </div>
-          <Link
-            className="inline-flex h-10 items-center justify-center rounded-md border border-zinc-300 px-4 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50"
-            href="/admin/products"
-          >
-            Back to products
-          </Link>
+          <div className="flex flex-wrap gap-3">
+            <Link
+              className="inline-flex h-10 items-center justify-center rounded-md border border-zinc-300 px-4 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50"
+              href={`/admin/products/${product.id}/images`}
+            >
+              Manage images
+            </Link>
+            <Link
+              className="inline-flex h-10 items-center justify-center rounded-md border border-zinc-300 px-4 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50"
+              href="/admin/products"
+            >
+              Back to products
+            </Link>
+          </div>
         </div>
 
         {product.description ? (
