@@ -24,6 +24,7 @@ type ProductFormProduct = Pick<
   | "primary_category_id"
   | "brand"
   | "status"
+  | "featured"
 > & {
   sku?: string;
   basePrice?: number | null;
@@ -163,6 +164,16 @@ export function ProductForm({ mode, product, categories }: ProductFormProps) {
           />
         </label>
       </div>
+
+      <label className="flex items-center gap-3 text-sm font-medium text-zinc-800">
+        <input
+          className="size-4 rounded border-zinc-300"
+          defaultChecked={product?.featured ?? false}
+          name="featured"
+          type="checkbox"
+        />
+        Featured product
+      </label>
 
       <ProductSubmitButton
         label={submitLabel}

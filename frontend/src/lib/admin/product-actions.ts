@@ -28,6 +28,7 @@ type ProductMutationInput = {
   primary_category_id: string;
   brand: string | null;
   status: ProductStatus;
+  featured: boolean;
   sku: string;
   basePrice: number;
 };
@@ -80,6 +81,7 @@ function validateProductForm(formData: FormData): ProductValidationResult {
   const categoryId = getStringValue(formData, "categoryId");
   const brand = getOptionalStringValue(formData, "brand");
   const statusValue = getStringValue(formData, "status") || "draft";
+  const featured = formData.get("featured") === "on";
   const sku = getStringValue(formData, "sku").toUpperCase();
   const basePriceValue = getStringValue(formData, "basePrice");
   const basePrice = Number.parseFloat(basePriceValue);
@@ -148,6 +150,7 @@ function validateProductForm(formData: FormData): ProductValidationResult {
       primary_category_id: categoryId,
       brand,
       status: statusValue,
+      featured,
       sku,
       basePrice,
     },
@@ -192,10 +195,29 @@ async function getBaseVariantId(productId: string) {
   return { variantId: data?.id ?? null, error: null };
 }
 
+async function getProductMetadata(productId: string) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from("products")
+    .select("metadata")
+    .eq("id", productId)
+    .maybeSingle()
+    .returns<{ metadata: Record<string, unknown> | null } | null>();
+
+  if (error) {
+    return { metadata: null, error: error.message };
+  }
+
+  return { metadata: data?.metadata ?? {}, error: null };
+}
+
 function revalidateProductPaths(productId?: string) {
+  revalidatePath("/");
+  revalidatePath("/products");
   revalidatePath("/admin/products");
 
   if (productId) {
+    revalidatePath("/products/[slug]", "page");
     revalidatePath(`/admin/products/${productId}`);
   }
 }
@@ -228,6 +250,7 @@ export async function createProductAction(
       primary_category_id: validation.data.primary_category_id,
       brand: validation.data.brand,
       status: validation.data.status,
+      metadata: { featured: validation.data.featured },
     })
     .select("id")
     .single()
@@ -283,6 +306,12 @@ export async function updateProductAction(
   }
 
   const supabase = await createClient();
+  const metadataResult = await getProductMetadata(id);
+
+  if (metadataResult.error) {
+    return { status: "error", message: metadataResult.error };
+  }
+
   const { error: productError } = await supabase
     .from("products")
     .update({
@@ -292,6 +321,10 @@ export async function updateProductAction(
       primary_category_id: validation.data.primary_category_id,
       brand: validation.data.brand,
       status: validation.data.status,
+      metadata: {
+        ...(metadataResult.metadata ?? {}),
+        featured: validation.data.featured,
+      },
     })
     .eq("id", id)
     .is("deleted_at", null);

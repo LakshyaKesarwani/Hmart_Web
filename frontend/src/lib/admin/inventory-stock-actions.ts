@@ -15,12 +15,12 @@ export const initialInventoryActionState: InventoryActionState = {
 };
 
 type InventoryRow = {
-  id: string;
   location_id: string;
   variant_id: string;
   quantity_on_hand: number;
   quantity_reserved: number;
-  reorder_threshold: number;
+  quantity_available: number | null;
+  reorder_level: number;
 };
 
 function getStringValue(formData: FormData, key: string) {
@@ -67,6 +67,9 @@ function validateNotes(notes: string | null):
 }
 
 function revalidateInventoryPaths() {
+  revalidatePath("/");
+  revalidatePath("/products");
+  revalidatePath("/products/[slug]", "page");
   revalidatePath("/admin/inventory");
 }
 
@@ -128,7 +131,7 @@ async function getInventoryRow(locationId: string, variantId: string) {
   const { data, error } = await supabase
     .from("inventory")
     .select(
-      "id, location_id, variant_id, quantity_on_hand, quantity_reserved, reorder_threshold",
+      "location_id, variant_id, quantity_on_hand, quantity_reserved, quantity_available, reorder_level",
     )
     .eq("location_id", locationId)
     .eq("variant_id", variantId)
@@ -198,13 +201,19 @@ async function upsertInventoryQuantity({
   }
 
   if (existing.row) {
+    const quantityAvailable = Math.max(
+      quantityAfter - existing.row.quantity_reserved,
+      0,
+    );
     const { error } = await supabase
       .from("inventory")
       .update({
         quantity_on_hand: quantityAfter,
+        quantity_available: quantityAvailable,
         updated_at: new Date().toISOString(),
       })
-      .eq("id", existing.row.id);
+      .eq("location_id", locationId)
+      .eq("variant_id", variantId);
 
     if (error) {
       return { ok: false as const, message: error.message };
@@ -218,7 +227,8 @@ async function upsertInventoryQuantity({
     variant_id: variantId,
     quantity_on_hand: quantityAfter,
     quantity_reserved: 0,
-    reorder_threshold: reorderThreshold ?? 10,
+    quantity_available: quantityAfter,
+    reorder_level: reorderThreshold ?? 10,
   });
 
   if (error) {
@@ -388,9 +398,14 @@ export async function removeInventoryStockAction(
     .from("inventory")
     .update({
       quantity_on_hand: quantityAfter,
+      quantity_available: Math.max(
+        quantityAfter - existing.row.quantity_reserved,
+        0,
+      ),
       updated_at: new Date().toISOString(),
     })
-    .eq("id", existing.row.id);
+    .eq("location_id", locationId)
+    .eq("variant_id", variantId);
 
   if (updateError) {
     return { status: "error", message: updateError.message };
@@ -508,9 +523,14 @@ export async function transferInventoryStockAction(
     .from("inventory")
     .update({
       quantity_on_hand: sourceAfter,
+      quantity_available: Math.max(
+        sourceAfter - sourceRow.row.quantity_reserved,
+        0,
+      ),
       updated_at: new Date().toISOString(),
     })
-    .eq("id", sourceRow.row.id);
+    .eq("location_id", fromLocationId)
+    .eq("variant_id", variantId);
 
   if (sourceUpdateError) {
     return { status: "error", message: sourceUpdateError.message };
@@ -521,15 +541,21 @@ export async function transferInventoryStockAction(
         .from("inventory")
         .update({
           quantity_on_hand: destAfter,
+          quantity_available: Math.max(
+            destAfter - destRow.row.quantity_reserved,
+            0,
+          ),
           updated_at: new Date().toISOString(),
         })
-        .eq("id", destRow.row.id)
+        .eq("location_id", toLocationId)
+        .eq("variant_id", variantId)
     : await supabase.from("inventory").insert({
         location_id: toLocationId,
         variant_id: variantId,
         quantity_on_hand: destAfter,
         quantity_reserved: 0,
-        reorder_threshold: sourceRow.row.reorder_threshold,
+        quantity_available: destAfter,
+        reorder_level: sourceRow.row.reorder_level,
       });
 
   if (destUpdate.error) {
@@ -537,9 +563,14 @@ export async function transferInventoryStockAction(
       .from("inventory")
       .update({
         quantity_on_hand: sourceBefore,
+        quantity_available: Math.max(
+          sourceBefore - sourceRow.row.quantity_reserved,
+          0,
+        ),
         updated_at: new Date().toISOString(),
       })
-      .eq("id", sourceRow.row.id);
+      .eq("location_id", fromLocationId)
+      .eq("variant_id", variantId);
 
     return { status: "error", message: destUpdate.error.message };
   }
@@ -641,7 +672,7 @@ export async function adjustInventoryStockAction(
     locationId,
     variantId,
     quantityAfter,
-    reorderThreshold: existing.row?.reorder_threshold,
+    reorderThreshold: existing.row?.reorder_level,
   });
 
   if (!updateResult.ok) {

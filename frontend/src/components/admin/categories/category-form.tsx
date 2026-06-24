@@ -67,6 +67,18 @@ export function CategoryForm({
         />
       </label>
 
+      <label className="block">
+        <span className="text-sm font-medium text-zinc-800">Image URL</span>
+        <input
+          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-950"
+          defaultValue={category?.image_url ?? ""}
+          maxLength={2000}
+          name="imageUrl"
+          placeholder="https://example.com/category.jpg"
+          type="url"
+        />
+      </label>
+
       <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_160px]">
         <label className="block">
           <span className="text-sm font-medium text-zinc-800">

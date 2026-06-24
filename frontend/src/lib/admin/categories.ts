@@ -8,6 +8,7 @@ export type CategoryRow = {
   name: string;
   slug: string;
   description: string | null;
+  image_url: string | null;
   sort_order: number;
   is_active: boolean;
   created_at: string;
@@ -48,7 +49,7 @@ export async function getCategories({
   let query = supabase
     .from("categories")
     .select(
-      "id, parent_id, name, slug, description, sort_order, is_active, created_at, updated_at",
+      "id, parent_id, name, slug, description, image_url, sort_order, is_active, created_at, updated_at",
       { count: "exact" },
     )
     .is("deleted_at", null)

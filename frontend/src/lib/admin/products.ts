@@ -34,6 +34,7 @@ type ProductRecord = {
   description: string | null;
   brand: string | null;
   status: ProductStatus;
+  metadata: Record<string, unknown> | null;
   created_at: string;
   updated_at: string;
 };
@@ -41,11 +42,13 @@ type ProductRecord = {
 export type ProductListItem = ProductRecord & {
   categoryName: string;
   basePrice: number | null;
+  featured: boolean;
   sku: string;
 };
 
 export type ProductDetail = ProductRecord & {
   categoryName: string;
+  featured: boolean;
   images: ProductImageSummary[];
   variants: ProductVariantSummary[];
 };
@@ -142,7 +145,7 @@ export async function getProducts({
   let query = supabase
     .from("products")
     .select(
-      "id, primary_category_id, name, slug, description, brand, status, created_at, updated_at",
+      "id, primary_category_id, name, slug, description, brand, status, metadata, created_at, updated_at",
       { count: "exact" },
     )
     .is("deleted_at", null)
@@ -225,6 +228,7 @@ export async function getProducts({
           ? (categoryNameById.get(product.primary_category_id) ?? "Unassigned")
           : "Unassigned",
         basePrice: baseVariant?.price ?? null,
+        featured: product.metadata?.featured === true,
         sku: baseVariant?.sku ?? "No SKU",
       };
     }),
@@ -243,7 +247,7 @@ export async function getProductById(
   const { data: product, error } = await supabase
     .from("products")
     .select(
-      "id, primary_category_id, name, slug, description, brand, status, created_at, updated_at",
+      "id, primary_category_id, name, slug, description, brand, status, metadata, created_at, updated_at",
     )
     .eq("id", productId)
     .is("deleted_at", null)
@@ -302,6 +306,7 @@ export async function getProductById(
     product: {
       ...product,
       categoryName: categoryResult.data?.name ?? "Unassigned",
+      featured: product.metadata?.featured === true,
       images: imagesResult.data ?? [],
       variants: variantsResult.data ?? [],
     },

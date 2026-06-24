@@ -19,13 +19,17 @@ type ProductVariantRow = {
   sku: string;
   price: number;
   unit: string | null;
+  weight_grams: number | null;
+  attributes: Record<string, unknown> | null;
   is_active: boolean | null;
 };
 
 type VariantMutationInput = {
+  name: string | null;
   sku: string;
   price: number;
   unit: string;
+  weightGrams: number | null;
   isActive: boolean;
 };
 
@@ -52,11 +56,20 @@ function validateUuid(value: string) {
 }
 
 function validateVariantForm(formData: FormData): VariantValidationResult {
+  const name = getStringValue(formData, "name");
   const sku = getStringValue(formData, "sku").toUpperCase();
   const priceValue = getStringValue(formData, "price");
   const price = Number.parseFloat(priceValue);
   const unit = getStringValue(formData, "unit");
+  const weightValue = getStringValue(formData, "weightGrams");
+  const weightGrams = weightValue ? Number.parseInt(weightValue, 10) : null;
   const isActive = formData.get("isActive") === "on";
+
+  if (name && name.length > 120) {
+    return {
+      error: "Variant name must be 120 characters or fewer.",
+    };
+  }
 
   if (sku.length < 2 || sku.length > 64) {
     return {
@@ -90,17 +103,31 @@ function validateVariantForm(formData: FormData): VariantValidationResult {
     };
   }
 
+  if (
+    weightGrams !== null &&
+    (!Number.isInteger(weightGrams) || weightGrams < 0 || weightGrams > 1000000)
+  ) {
+    return {
+      error: "Weight must be a whole gram value between 0 and 1,000,000.",
+    };
+  }
+
   return {
     data: {
+      name: name || null,
       sku,
       price,
       unit,
+      weightGrams,
       isActive,
     },
   };
 }
 
 function revalidateProductVariantPaths(productId: string) {
+  revalidatePath("/");
+  revalidatePath("/products");
+  revalidatePath("/products/[slug]", "page");
   revalidatePath(`/admin/products/${productId}/variants`);
   revalidatePath(`/admin/products/${productId}`);
   revalidatePath("/admin/products");
@@ -131,7 +158,7 @@ async function getProductVariant(productId: string, variantId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("product_variants")
-    .select("id, product_id, sku, price, unit, is_active")
+    .select("id, product_id, sku, price, unit, weight_grams, attributes, is_active")
     .eq("id", variantId)
     .eq("product_id", productId)
     .maybeSingle()
@@ -190,6 +217,8 @@ export async function createProductVariantAction(
     sku: validation.data.sku,
     price: validation.data.price,
     unit: validation.data.unit,
+    weight_grams: validation.data.weightGrams,
+    attributes: validation.data.name ? { name: validation.data.name } : {},
     is_active: validation.data.isActive,
   });
 
@@ -229,12 +258,21 @@ export async function updateProductVariantAction(
   }
 
   const supabase = await createClient();
+  const currentAttributes = variantCheck.variant.attributes ?? {};
+  const nextAttributes = validation.data.name
+    ? { ...currentAttributes, name: validation.data.name }
+    : Object.fromEntries(
+        Object.entries(currentAttributes).filter(([key]) => key !== "name"),
+      );
+
   const { error } = await supabase
     .from("product_variants")
     .update({
       sku: validation.data.sku,
       price: validation.data.price,
       unit: validation.data.unit,
+      weight_grams: validation.data.weightGrams,
+      attributes: nextAttributes,
       is_active: validation.data.isActive,
     })
     .eq("id", variantId)

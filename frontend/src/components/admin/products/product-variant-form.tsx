@@ -25,6 +25,8 @@ export function ProductVariantForm({
     mode === "create" ? createProductVariantAction : updateProductVariantAction;
   const [state, formAction] = useActionState(action, initialProductVariantActionState);
   const submitLabel = mode === "create" ? "Create variant" : "Save changes";
+  const variantName =
+    typeof variant?.attributes?.name === "string" ? variant.attributes.name : "";
 
   return (
     <form action={formAction} className="space-y-4">
@@ -35,6 +37,18 @@ export function ProductVariantForm({
       ) : null}
 
       <div className="grid gap-4 md:grid-cols-2">
+        <label className="block">
+          <span className="text-sm font-medium text-zinc-800">Variant name</span>
+          <input
+            className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-950"
+            defaultValue={variantName}
+            maxLength={120}
+            name="name"
+            placeholder="e.g. 1 kg pack"
+            type="text"
+          />
+        </label>
+
         <label className="block">
           <span className="text-sm font-medium text-zinc-800">SKU</span>
           <input
@@ -75,6 +89,18 @@ export function ProductVariantForm({
           placeholder="e.g. kg, piece, pack"
           required
           type="text"
+        />
+      </label>
+
+      <label className="block">
+        <span className="text-sm font-medium text-zinc-800">Weight (grams)</span>
+        <input
+          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-950"
+          defaultValue={variant?.weight_grams ?? ""}
+          max={1000000}
+          min={0}
+          name="weightGrams"
+          type="number"
         />
       </label>
 

@@ -6,6 +6,8 @@ export type ProductVariantRecord = {
   sku: string;
   price: number;
   unit: string | null;
+  weight_grams: number | null;
+  attributes: Record<string, unknown> | null;
   is_active: boolean | null;
 };
 
@@ -46,7 +48,7 @@ export async function getProductVariantPageContext(
       .returns<{ id: string; name: string } | null>(),
     supabase
       .from("product_variants")
-      .select("id, product_id, sku, price, unit, is_active")
+      .select("id, product_id, sku, price, unit, weight_grams, attributes, is_active")
       .eq("product_id", productId)
       .order("price", { ascending: true })
       .order("sku", { ascending: true })

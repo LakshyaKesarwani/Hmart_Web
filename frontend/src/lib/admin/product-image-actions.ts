@@ -50,6 +50,9 @@ function validateUuid(value: string) {
 }
 
 function revalidateProductImagePaths(productId: string) {
+  revalidatePath("/");
+  revalidatePath("/products");
+  revalidatePath("/products/[slug]", "page");
   revalidatePath(`/admin/products/${productId}/images`);
   revalidatePath(`/admin/products/${productId}`);
   revalidatePath("/admin/products");

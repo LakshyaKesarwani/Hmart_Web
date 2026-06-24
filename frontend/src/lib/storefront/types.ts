@@ -8,6 +8,7 @@ export type StorefrontCategory = {
   name: string;
   slug: string;
   description: string | null;
+  imageUrl: string | null;
 };
 
 export type StorefrontProductCard = {

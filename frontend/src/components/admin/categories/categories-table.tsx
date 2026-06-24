@@ -43,8 +43,20 @@ export function CategoriesTable({
             {categories.map((category) => (
               <tr className="align-top text-zinc-700" key={category.id}>
                 <td className="px-5 py-4">
-                  <p className="font-medium text-zinc-950">{category.name}</p>
-                  <p className="mt-1 text-xs text-zinc-500">{category.slug}</p>
+                  <div className="flex gap-3">
+                    {category.image_url ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        alt=""
+                        className="size-12 rounded-md border border-zinc-200 object-cover"
+                        src={category.image_url}
+                      />
+                    ) : null}
+                    <div>
+                      <p className="font-medium text-zinc-950">{category.name}</p>
+                      <p className="mt-1 text-xs text-zinc-500">{category.slug}</p>
+                    </div>
+                  </div>
                   {category.description ? (
                     <p className="mt-2 max-w-xl text-sm leading-6 text-zinc-600">
                       {category.description}

@@ -34,8 +34,10 @@ export function ProductVariantsTable({
           <thead className="bg-zinc-50 text-left text-xs font-semibold uppercase tracking-wide text-zinc-500">
             <tr>
               <th className="px-5 py-3" scope="col">SKU</th>
+              <th className="px-5 py-3" scope="col">Name</th>
               <th className="px-5 py-3" scope="col">Price</th>
               <th className="px-5 py-3" scope="col">Unit</th>
+              <th className="px-5 py-3" scope="col">Weight</th>
               <th className="px-5 py-3" scope="col">Status</th>
               <th className="px-5 py-3" scope="col">Actions</th>
             </tr>
@@ -43,16 +45,26 @@ export function ProductVariantsTable({
           <tbody className="divide-y divide-zinc-200">
             {variants.map((variant) => {
               const isActive = variant.is_active !== false;
+              const variantName =
+                typeof variant.attributes?.name === "string"
+                  ? variant.attributes.name
+                  : "—";
 
               return (
                 <tr className="align-top text-zinc-700" key={variant.id}>
                   <td className="px-5 py-4 font-medium text-zinc-950">
                     {variant.sku}
                   </td>
+                  <td className="px-5 py-4">{variantName}</td>
                   <td className="px-5 py-4">
                     {currencyFormatter.format(variant.price)}
                   </td>
                   <td className="px-5 py-4">{variant.unit ?? "—"}</td>
+                  <td className="px-5 py-4">
+                    {variant.weight_grams === null
+                      ? "—"
+                      : `${variant.weight_grams} g`}
+                  </td>
                   <td className="px-5 py-4">
                     <span
                       className={`rounded-full px-2.5 py-1 text-xs font-medium ${

@@ -47,20 +47,22 @@ export type InventoryVariantOption = {
 };
 
 type InventoryRecord = {
-  id: string;
   location_id: string;
   variant_id: string;
   quantity_on_hand: number;
   quantity_reserved: number;
-  reorder_threshold: number;
+  quantity_available: number | null;
+  reorder_level: number;
 };
 
 export type InventoryStockItem = InventoryRecord & {
+  id: string;
   locationName: string;
   locationCode: string;
   sku: string;
   productName: string;
   availableQuantity: number;
+  reorder_threshold: number;
   isLowStock: boolean;
 };
 
@@ -292,10 +294,12 @@ async function enrichInventoryRows(rows: InventoryRecord[]) {
   return rows.map((row) => {
     const location = locationById.get(row.location_id);
     const variant = variantById.get(row.variant_id);
-    const availableQuantity = row.quantity_on_hand - row.quantity_reserved;
+    const availableQuantity =
+      row.quantity_available ?? row.quantity_on_hand - row.quantity_reserved;
 
     return {
       ...row,
+      id: `${row.location_id}:${row.variant_id}`,
       locationName: location?.name ?? "Unknown location",
       locationCode: location?.code ?? "—",
       sku: variant?.sku ?? "Unknown SKU",
@@ -303,7 +307,8 @@ async function enrichInventoryRows(rows: InventoryRecord[]) {
         ? (productNameById.get(variant.product_id) ?? "Unknown product")
         : "Unknown product",
       availableQuantity,
-      isLowStock: row.quantity_on_hand <= row.reorder_threshold,
+      reorder_threshold: row.reorder_level,
+      isLowStock: availableQuantity <= row.reorder_level,
     } satisfies InventoryStockItem;
   });
 }
@@ -349,7 +354,7 @@ export async function getInventoryStock({
   let query = supabase
     .from("inventory")
     .select(
-      "id, location_id, variant_id, quantity_on_hand, quantity_reserved, reorder_threshold",
+      "location_id, variant_id, quantity_on_hand, quantity_reserved, quantity_available, reorder_level",
       { count: "exact" },
     )
     .order("updated_at", { ascending: false })
@@ -415,9 +420,9 @@ export async function getLowStockItems({
   const { data: allRows, error } = await supabase
     .from("inventory")
     .select(
-      "id, location_id, variant_id, quantity_on_hand, quantity_reserved, reorder_threshold",
+      "location_id, variant_id, quantity_on_hand, quantity_reserved, quantity_available, reorder_level",
     )
-    .order("quantity_on_hand", { ascending: true })
+    .order("quantity_available", { ascending: true })
     .returns<InventoryRecord[]>();
 
   if (error) {
@@ -431,7 +436,9 @@ export async function getLowStockItems({
   }
 
   const lowStockRows = (allRows ?? []).filter(
-    (row) => row.quantity_on_hand <= row.reorder_threshold,
+    (row) =>
+      (row.quantity_available ?? row.quantity_on_hand - row.quantity_reserved) <=
+      row.reorder_level,
   );
   const totalCount = lowStockRows.length;
   const from = (safePage - 1) * LOW_STOCK_PAGE_SIZE;

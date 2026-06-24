@@ -9,6 +9,7 @@ type CategoryRecord = {
   name: string;
   slug: string;
   description: string | null;
+  image_url: string | null;
   sort_order: number;
   is_active: boolean;
 };
@@ -20,7 +21,7 @@ export async function getStorefrontCategories(): Promise<{
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("categories")
-    .select("id, name, slug, description, sort_order, is_active")
+    .select("id, name, slug, description, image_url, sort_order, is_active")
     .is("deleted_at", null)
     .eq("is_active", true)
     .order("sort_order", { ascending: true })
@@ -38,6 +39,7 @@ export async function getStorefrontCategories(): Promise<{
       name: category.name,
       slug: category.slug,
       description: category.description,
+      imageUrl: category.image_url,
     })),
     error: null,
   };
@@ -62,16 +64,27 @@ export async function getCategoryBySlug(slug: string): Promise<{
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("categories")
-    .select("id, name, slug, description")
+    .select("id, name, slug, description, image_url")
     .eq("slug", slug)
     .eq("is_active", true)
     .is("deleted_at", null)
     .maybeSingle()
-    .returns<StorefrontCategory | null>();
+    .returns<(Omit<StorefrontCategory, "imageUrl"> & { image_url: string | null }) | null>();
 
   if (error) {
     return { category: null, error: error.message };
   }
 
-  return { category: data, error: null };
+  return {
+    category: data
+      ? {
+          id: data.id,
+          name: data.name,
+          slug: data.slug,
+          description: data.description,
+          imageUrl: data.image_url,
+        }
+      : null,
+    error: null,
+  };
 }

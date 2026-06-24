@@ -73,6 +73,11 @@ export function ProductsTable({
                   {product.slug ? (
                     <p className="mt-1 text-xs text-zinc-500">{product.slug}</p>
                   ) : null}
+                  {product.featured ? (
+                    <span className="mt-2 inline-flex rounded-full bg-zinc-950 px-2.5 py-1 text-xs font-medium text-white">
+                      Featured
+                    </span>
+                  ) : null}
                 </td>
                 <td className="px-5 py-4">{product.sku}</td>
                 <td className="px-5 py-4">{product.categoryName}</td>

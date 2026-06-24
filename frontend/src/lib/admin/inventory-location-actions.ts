@@ -156,7 +156,7 @@ export async function deleteInventoryLocationAction(
   const supabase = await createClient();
   const { count, error: stockError } = await supabase
     .from("inventory")
-    .select("id", { count: "exact", head: true })
+    .select("variant_id", { count: "exact", head: true })
     .eq("location_id", id)
     .gt("quantity_on_hand", 0);
 

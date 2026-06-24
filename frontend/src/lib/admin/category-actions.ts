@@ -17,6 +17,7 @@ type CategoryMutationInput = {
   name: string;
   slug: string;
   description: string | null;
+  image_url: string | null;
   parent_id: string | null;
   sort_order: number;
   is_active: boolean;
@@ -66,6 +67,7 @@ function validateCategoryForm(
   const submittedSlug = getStringValue(formData, "slug");
   const slug = submittedSlug || slugify(name);
   const description = getOptionalStringValue(formData, "description");
+  const imageUrl = getOptionalStringValue(formData, "imageUrl");
   const parentId = getOptionalStringValue(formData, "parentId");
   const sortOrderValue = getStringValue(formData, "sortOrder") || "0";
   const sortOrder = Number.parseInt(sortOrderValue, 10);
@@ -88,6 +90,24 @@ function validateCategoryForm(
     return {
       error: "Description must be 500 characters or fewer.",
     };
+  }
+
+  if (imageUrl && imageUrl.length > 2000) {
+    return {
+      error: "Image URL must be 2000 characters or fewer.",
+    };
+  }
+
+  if (imageUrl) {
+    try {
+      const parsed = new URL(imageUrl);
+
+      if (parsed.protocol !== "https:" && parsed.protocol !== "http:") {
+        return { error: "Image URL must start with http:// or https://." };
+      }
+    } catch {
+      return { error: "Enter a valid image URL." };
+    }
   }
 
   if (!Number.isInteger(sortOrder) || sortOrder < 0 || sortOrder > 100000) {
@@ -113,11 +133,19 @@ function validateCategoryForm(
       name,
       slug,
       description,
+      image_url: imageUrl,
       parent_id: parentId,
       sort_order: sortOrder,
       is_active: isActive,
     },
   };
+}
+
+function revalidateCategoryPaths() {
+  revalidatePath("/");
+  revalidatePath("/products");
+  revalidatePath("/admin/categories");
+  revalidatePath("/admin/products");
 }
 
 export async function createCategoryAction(
@@ -137,7 +165,7 @@ export async function createCategoryAction(
     return { status: "error", message: error.message };
   }
 
-  revalidatePath("/admin/categories");
+  revalidateCategoryPaths();
 
   return { status: "success", message: "Category created." };
 }
@@ -168,7 +196,7 @@ export async function updateCategoryAction(
     return { status: "error", message: error.message };
   }
 
-  revalidatePath("/admin/categories");
+  revalidateCategoryPaths();
 
   return { status: "success", message: "Category updated." };
 }
@@ -213,7 +241,7 @@ export async function deleteCategoryAction(
     return { status: "error", message: error.message };
   }
 
-  revalidatePath("/admin/categories");
+  revalidateCategoryPaths();
 
   return { status: "success", message: "Category deleted." };
 }

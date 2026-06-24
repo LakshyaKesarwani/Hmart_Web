@@ -15,18 +15,30 @@ export function CategoryCards({
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {categories.map((category) => (
         <Link
-          className="rounded-lg border border-zinc-200 bg-white p-5 transition-colors hover:border-zinc-400"
+          className="overflow-hidden rounded-lg border border-zinc-200 bg-white transition-colors hover:border-zinc-400"
           href={buildProductsHref({ category: category.slug })}
           key={category.id}
         >
-          <h3 className="text-lg font-semibold text-zinc-950">{category.name}</h3>
-          {category.description ? (
-            <p className="mt-2 line-clamp-2 text-sm leading-6 text-zinc-600">
-              {category.description}
-            </p>
-          ) : (
-            <p className="mt-2 text-sm text-zinc-600">Browse this department</p>
-          )}
+          {category.imageUrl ? (
+            <div className="aspect-[16/9] bg-zinc-100">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                alt=""
+                className="h-full w-full object-cover"
+                src={category.imageUrl}
+              />
+            </div>
+          ) : null}
+          <div className="p-5">
+            <h3 className="text-lg font-semibold text-zinc-950">{category.name}</h3>
+            {category.description ? (
+              <p className="mt-2 line-clamp-2 text-sm leading-6 text-zinc-600">
+                {category.description}
+              </p>
+            ) : (
+              <p className="mt-2 text-sm text-zinc-600">Browse this department</p>
+            )}
+          </div>
         </Link>
       ))}
     </div>
