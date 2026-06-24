@@ -1,15 +1,7 @@
-import { redirect } from "next/navigation";
 import { AuthCard } from "@/src/components/auth/auth-card";
 import { SignupForm } from "@/src/components/auth/signup-form";
-import { getCurrentUser } from "@/src/lib/auth/session";
 
-export default async function SignupPage() {
-  const user = await getCurrentUser();
-
-  if (user) {
-    redirect("/");
-  }
-
+export default function SignupPage() {
   return (
     <AuthCard
       footer={{

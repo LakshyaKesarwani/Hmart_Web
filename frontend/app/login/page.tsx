@@ -1,8 +1,6 @@
-import { redirect } from "next/navigation";
 import { AuthCard } from "@/src/components/auth/auth-card";
 import { LoginForm } from "@/src/components/auth/login-form";
 import { getSafeRedirectPath } from "@/src/lib/auth/redirects";
-import { getCurrentUser } from "@/src/lib/auth/session";
 
 type LoginPageProps = {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
@@ -26,12 +24,7 @@ function getNotice(searchParams: Record<string, string | string[] | undefined>) 
 
 export default async function LoginPage({ searchParams }: LoginPageProps) {
   const params = await searchParams;
-  const user = await getCurrentUser();
   const nextPath = getSafeRedirectPath(params.next);
-
-  if (user) {
-    redirect(nextPath);
-  }
 
   return (
     <AuthCard

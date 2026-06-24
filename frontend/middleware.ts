@@ -21,16 +21,10 @@ const protectedRoutes: Array<{
   },
 ];
 
-const guestOnlyRoutes = ["/login", "/signup", "/forgot-password"];
-
 function getProtectedRoute(pathname: string) {
   return protectedRoutes.find(
     (route) => pathname === route.prefix || pathname.startsWith(`${route.prefix}/`),
   );
-}
-
-function isGuestOnlyRoute(pathname: string) {
-  return guestOnlyRoutes.includes(pathname);
 }
 
 function hasAllowedRole(rows: UserRoleRow[] | null, allowedRoles: AuthRole[]) {
@@ -75,10 +69,6 @@ export async function middleware(request: NextRequest) {
   const { data } = await supabase.auth.getClaims();
   const userId = data?.claims.sub;
   const protectedRoute = getProtectedRoute(pathname);
-
-  if (isGuestOnlyRoute(pathname) && userId) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
 
   if (!protectedRoute) {
     return response;
