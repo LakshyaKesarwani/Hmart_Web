@@ -52,7 +52,7 @@ export default async function OrdersPage() {
             Orders you place from checkout will appear here.
           </p>
           <Link
-            className="mt-6 inline-flex h-10 items-center justify-center rounded-md bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+            className="mt-6 inline-flex h-10 items-center justify-center rounded-full bg-green-600 px-5 text-sm font-medium text-white transition-colors hover:bg-green-700"
             href="/products"
           >
             Browse products

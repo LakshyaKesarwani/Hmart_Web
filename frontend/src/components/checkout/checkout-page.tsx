@@ -32,7 +32,7 @@ function SubmitButton({
   const { pending } = useFormStatus();
   const styles = {
     primary:
-      "bg-zinc-950 text-white hover:bg-zinc-800 disabled:bg-zinc-300 disabled:text-white",
+      "bg-green-600 text-white hover:bg-green-700 disabled:bg-zinc-300 disabled:text-white",
     secondary:
       "border border-zinc-300 text-zinc-700 hover:bg-zinc-50 disabled:text-zinc-400",
     danger:
@@ -77,7 +77,7 @@ function AddressFields({ address }: { address?: CheckoutAddress }) {
       <label className="block">
         <span className="text-sm font-medium text-zinc-800">Full name</span>
         <input
-          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-950"
+          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-green-600"
           defaultValue={address?.recipientName ?? ""}
           name="fullName"
           required
@@ -86,7 +86,7 @@ function AddressFields({ address }: { address?: CheckoutAddress }) {
       <label className="block">
         <span className="text-sm font-medium text-zinc-800">Phone</span>
         <input
-          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-950"
+          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-green-600"
           defaultValue={address?.phone ?? ""}
           name="phone"
           required
@@ -95,7 +95,7 @@ function AddressFields({ address }: { address?: CheckoutAddress }) {
       <label className="block sm:col-span-2">
         <span className="text-sm font-medium text-zinc-800">Address line 1</span>
         <input
-          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-950"
+          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-green-600"
           defaultValue={address?.line1 ?? ""}
           name="line1"
           required
@@ -104,7 +104,7 @@ function AddressFields({ address }: { address?: CheckoutAddress }) {
       <label className="block sm:col-span-2">
         <span className="text-sm font-medium text-zinc-800">Address line 2</span>
         <input
-          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-950"
+          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-green-600"
           defaultValue={address?.line2 ?? ""}
           name="line2"
         />
@@ -112,7 +112,7 @@ function AddressFields({ address }: { address?: CheckoutAddress }) {
       <label className="block">
         <span className="text-sm font-medium text-zinc-800">City</span>
         <input
-          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-950"
+          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-green-600"
           defaultValue={address?.city ?? ""}
           name="city"
           required
@@ -121,7 +121,7 @@ function AddressFields({ address }: { address?: CheckoutAddress }) {
       <label className="block">
         <span className="text-sm font-medium text-zinc-800">State</span>
         <input
-          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-950"
+          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-green-600"
           defaultValue={address?.state ?? ""}
           name="state"
           required
@@ -130,7 +130,7 @@ function AddressFields({ address }: { address?: CheckoutAddress }) {
       <label className="block">
         <span className="text-sm font-medium text-zinc-800">Postal code</span>
         <input
-          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-950"
+          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-green-600"
           defaultValue={address?.postalCode ?? ""}
           name="postalCode"
           required
@@ -139,7 +139,7 @@ function AddressFields({ address }: { address?: CheckoutAddress }) {
       <label className="block">
         <span className="text-sm font-medium text-zinc-800">Country</span>
         <input
-          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-950"
+          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-green-600"
           defaultValue={address?.country ?? "India"}
           name="country"
           required
@@ -213,7 +213,7 @@ function AddressCard({
   return (
     <article
       className={`rounded-lg border bg-white p-5 ${
-        isSelected ? "border-zinc-950 ring-1 ring-zinc-950" : "border-zinc-200"
+        isSelected ? "border-green-600 ring-1 ring-green-600" : "border-zinc-200"
       }`}
     >
       <label className="flex gap-3">
@@ -372,7 +372,7 @@ export function CheckoutPageClient({ checkout }: { checkout: CheckoutData }) {
           Add items to your cart before starting checkout.
         </p>
         <Link
-          className="mt-6 inline-flex h-10 items-center justify-center rounded-md bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+          className="mt-6 inline-flex h-10 items-center justify-center rounded-full bg-green-600 px-5 text-sm font-medium text-white transition-colors hover:bg-green-700"
           href="/products"
         >
           Browse products

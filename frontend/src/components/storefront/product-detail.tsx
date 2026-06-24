@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useAuth } from "@/src/hooks/use-auth";
 import { addCartItemAction } from "@/src/lib/storefront/cart-actions";
-import { addLocalCartItem } from "@/src/lib/storefront/cart-storage";
+import { addLocalCartItem, broadcastCartCount } from "@/src/lib/storefront/cart-storage";
 import type {
   StorefrontProductImage,
   StorefrontProductVariant,
@@ -51,7 +51,7 @@ export function ProductImageGallery({
             <button
               className={`overflow-hidden rounded-lg border ${
                 image.id === selectedImage?.id
-                  ? "border-zinc-950 ring-2 ring-zinc-950"
+                  ? "border-green-600 ring-2 ring-green-600"
                   : "border-zinc-200"
               }`}
               key={image.id}
@@ -177,6 +177,9 @@ export function ProductAddToCartPanel({
         });
 
         setMessage({ status: result.status, text: result.message });
+        if (result.cart) {
+          broadcastCartCount(result.cart.summary.totalQuantity);
+        }
       } else {
         const result = addLocalCartItem({
           variantId: selectedVariant.id,
@@ -201,7 +204,7 @@ export function ProductAddToCartPanel({
         <label className="block">
           <span className="text-sm font-medium text-zinc-800">Variant</span>
           <select
-            className="mt-2 h-11 w-full rounded-md border border-zinc-300 bg-white px-3 text-sm outline-none transition-colors focus:border-zinc-950"
+            className="mt-2 h-11 w-full rounded-md border border-zinc-300 bg-white px-3 text-sm outline-none transition-colors focus:border-green-600"
             onChange={(event) => {
               setSelectedVariantId(event.target.value);
               setQuantity(1);
@@ -222,7 +225,7 @@ export function ProductAddToCartPanel({
         <label className="block">
           <span className="text-sm font-medium text-zinc-800">Quantity</span>
           <input
-            className="mt-2 h-11 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-950 disabled:bg-zinc-100"
+            className="mt-2 h-11 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-green-600 disabled:bg-zinc-100"
             disabled={!selectedVariant?.inStock}
             max={Math.max(maxQuantity, 1)}
             min={1}
@@ -247,7 +250,7 @@ export function ProductAddToCartPanel({
 
       <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
         <button
-          className="inline-flex h-11 items-center justify-center rounded-md bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800 disabled:cursor-not-allowed disabled:bg-zinc-300"
+          className="inline-flex h-11 items-center justify-center rounded-full bg-green-600 px-5 text-sm font-medium text-white transition-colors hover:bg-green-700 disabled:cursor-not-allowed disabled:bg-zinc-300"
           disabled={isLoading || isPending || !canAdd}
           onClick={handleAddToCart}
           type="button"

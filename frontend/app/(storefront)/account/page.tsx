@@ -45,7 +45,7 @@ export default async function AccountPage() {
 
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
-            className="inline-flex h-10 items-center justify-center rounded-md bg-zinc-950 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+            className="inline-flex h-10 items-center justify-center rounded-full bg-green-600 px-4 text-sm font-medium text-white transition-colors hover:bg-green-700"
             href="/orders"
           >
             View orders

@@ -48,7 +48,7 @@ export function CatalogFilters({
       <label className="block">
         <span className="text-sm font-medium text-zinc-800">Search</span>
         <input
-          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-950"
+          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-green-600"
           defaultValue={search}
           name="q"
           placeholder="Search products"
@@ -59,7 +59,7 @@ export function CatalogFilters({
       <label className="block">
         <span className="text-sm font-medium text-zinc-800">Category</span>
         <select
-          className="mt-2 h-10 w-full rounded-md border border-zinc-300 bg-white px-3 text-sm outline-none transition-colors focus:border-zinc-950"
+          className="mt-2 h-10 w-full rounded-md border border-zinc-300 bg-white px-3 text-sm outline-none transition-colors focus:border-green-600"
           defaultValue={category}
           name="category"
         >
@@ -75,7 +75,7 @@ export function CatalogFilters({
       <label className="block">
         <span className="text-sm font-medium text-zinc-800">Min price</span>
         <input
-          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-950"
+          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-green-600"
           defaultValue={minPrice}
           min={0}
           name="minPrice"
@@ -88,7 +88,7 @@ export function CatalogFilters({
       <label className="block">
         <span className="text-sm font-medium text-zinc-800">Max price</span>
         <input
-          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-zinc-950"
+          className="mt-2 h-10 w-full rounded-md border border-zinc-300 px-3 text-sm outline-none transition-colors focus:border-green-600"
           defaultValue={maxPrice}
           min={0}
           name="maxPrice"
@@ -100,7 +100,7 @@ export function CatalogFilters({
 
       <div className="flex items-end gap-2">
         <button
-          className="inline-flex h-10 flex-1 items-center justify-center rounded-md bg-zinc-950 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+          className="inline-flex h-10 flex-1 items-center justify-center rounded-full bg-green-600 px-4 text-sm font-medium text-white transition-colors hover:bg-green-700"
           type="submit"
         >
           Apply

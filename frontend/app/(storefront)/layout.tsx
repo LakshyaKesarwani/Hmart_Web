@@ -13,7 +13,7 @@ export default async function StorefrontLayout({
   ]);
 
   return (
-    <div className="flex min-h-full flex-col bg-zinc-50 text-zinc-950">
+    <div className="flex min-h-screen flex-col bg-stone-50 text-zinc-950">
       <StorefrontHeader categories={categories} userEmail={user?.email ?? null} />
       <main className="flex-1">{children}</main>
       <StorefrontFooter userEmail={user?.email ?? null} />

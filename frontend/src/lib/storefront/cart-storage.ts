@@ -7,9 +7,20 @@ import {
 } from "@/src/lib/storefront/cart-types";
 
 const CART_CHANGE_EVENT = "hmart-cart-change";
+const CART_COUNT_EVENT = "hmart-cart-count";
 
 function dispatchCartChange() {
   window.dispatchEvent(new Event(CART_CHANGE_EVENT));
+}
+
+export function broadcastCartCount(count: number) {
+  window.dispatchEvent(new CustomEvent<number>(CART_COUNT_EVENT, { detail: count }));
+}
+
+export function subscribeToCartCount(callback: (count: number) => void) {
+  const handler = (e: Event) => callback((e as CustomEvent<number>).detail);
+  window.addEventListener(CART_COUNT_EVENT, handler);
+  return () => window.removeEventListener(CART_COUNT_EVENT, handler);
 }
 
 function normalizeQuantity(value: number) {
@@ -75,6 +86,7 @@ export function writeLocalCart(items: CartStorageItem[]) {
   }
 
   dispatchCartChange();
+  broadcastCartCount(normalized.reduce((sum, item) => sum + item.quantity, 0));
 }
 
 export function addLocalCartItem({
