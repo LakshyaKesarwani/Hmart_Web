@@ -1,0 +1,22 @@
+# Backend dependencies
+psycopg2-binary==2.9.8  # PostgreSQL adapter for Python
+supabase==0.2.8         # Supabase Python client
+
+# Frontend dependencies
+next==13.4.5            # Next.js framework
+react==18.2.0           # React library
+react-dom==18.2.0       # React DOM library
+tailwindcss==3.3.2      # Tailwind CSS for styling
+
+# Utility libraries
+dotenv==1.0.0           # For environment variable management
+uuid==1.30              # UUID generation
+requests==2.31.0        # HTTP requests library
+
+# Testing dependencies
+pytest==7.4.0           # Testing framework
+pytest-django==4.5.2    # Django plugin for pytest (if applicable)
+
+# Linting and formatting
+eslint==8.45.0          # JavaScript/TypeScript linting
+prettier==3.0.0         # Code formatter
