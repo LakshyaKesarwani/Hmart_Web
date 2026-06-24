@@ -73,12 +73,20 @@ export function StorefrontHeader({
                 />
               </>
             ) : (
-              <Link
-                className="inline-flex h-10 items-center justify-center rounded-md bg-zinc-950 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
-                href="/login"
-              >
-                Sign in
-              </Link>
+              <>
+                <Link
+                  className="inline-flex h-10 items-center justify-center rounded-md border border-zinc-300 px-4 text-sm font-medium text-zinc-700 transition-colors hover:bg-zinc-50"
+                  href="/signup"
+                >
+                  Sign up
+                </Link>
+                <Link
+                  className="inline-flex h-10 items-center justify-center rounded-md bg-zinc-950 px-4 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+                  href="/login"
+                >
+                  Sign in
+                </Link>
+              </>
             )}
           </div>
         </div>
@@ -110,7 +118,7 @@ export function StorefrontHeader({
   );
 }
 
-export function StorefrontFooter() {
+export function StorefrontFooter({ userEmail }: { userEmail: string | null }) {
   return (
     <footer className="mt-auto border-t border-zinc-200 bg-zinc-950 text-white">
       <div className="mx-auto flex max-w-7xl flex-col gap-4 px-4 py-8 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
@@ -121,19 +129,36 @@ export function StorefrontFooter() {
             everyday needs.
           </p>
         </div>
-        <div className="flex flex-wrap gap-4 text-sm text-zinc-300">
+        <div className="flex flex-wrap items-center gap-4 text-sm text-zinc-300">
           <Link className="transition-colors hover:text-white" href="/products">
             Products
           </Link>
           <Link className="transition-colors hover:text-white" href="/cart">
             Cart
           </Link>
-          <Link className="transition-colors hover:text-white" href="/login">
-            Sign in
-          </Link>
-          <Link className="transition-colors hover:text-white" href="/signup">
-            Create account
-          </Link>
+          {userEmail ? (
+            <>
+              <Link className="transition-colors hover:text-white" href="/account">
+                Account
+              </Link>
+              <Link className="transition-colors hover:text-white" href="/orders">
+                Orders
+              </Link>
+              <LogoutButton
+                className="text-sm font-medium text-zinc-300 transition-colors hover:text-white"
+                label="Logout"
+              />
+            </>
+          ) : (
+            <>
+              <Link className="transition-colors hover:text-white" href="/login">
+                Sign in
+              </Link>
+              <Link className="transition-colors hover:text-white" href="/signup">
+                Create account
+              </Link>
+            </>
+          )}
         </div>
       </div>
     </footer>
