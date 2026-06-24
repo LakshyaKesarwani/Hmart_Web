@@ -10,13 +10,16 @@ export function StorefrontEmptyState({
   title: string;
 }) {
   return (
-    <div className="rounded-2xl border border-dashed border-zinc-300 bg-white p-10 text-center">
+    <div className="rounded-lg border border-dashed border-zinc-300 bg-white px-6 py-12 text-center">
+      <div className="mx-auto mb-4 flex size-12 items-center justify-center rounded-md bg-zinc-100 text-sm font-semibold text-zinc-500">
+        HM
+      </div>
       <h2 className="text-lg font-semibold text-zinc-950">{title}</h2>
       <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-zinc-600">
         {description}
       </p>
       <Link
-        className="mt-6 inline-flex h-10 items-center justify-center rounded-full bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
+        className="mt-6 inline-flex h-10 items-center justify-center rounded-md bg-zinc-950 px-5 text-sm font-medium text-white transition-colors hover:bg-zinc-800"
         href="/products"
       >
         Browse products

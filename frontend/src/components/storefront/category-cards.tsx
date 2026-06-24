@@ -15,7 +15,7 @@ export function CategoryCards({
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
       {categories.map((category) => (
         <Link
-          className="rounded-2xl border border-zinc-200 bg-white p-5 transition-shadow hover:shadow-md"
+          className="rounded-lg border border-zinc-200 bg-white p-5 transition-colors hover:border-zinc-400"
           href={buildProductsHref({ category: category.slug })}
           key={category.id}
         >
