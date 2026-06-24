@@ -3,9 +3,9 @@
 import { useActionState } from "react";
 import {
   initialProductActionState,
-  PRODUCT_STATUS_OPTIONS,
   updateProductStatusAction,
 } from "@/src/lib/admin/product-actions";
+import { PRODUCT_STATUS_OPTIONS } from "@/src/lib/admin/placeholder-data";
 import type { ProductStatus } from "@/src/lib/admin/products";
 import { ProductActionMessage } from "./product-action-message";
 import { ProductSubmitButton } from "./product-submit-button";

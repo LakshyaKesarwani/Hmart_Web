@@ -104,9 +104,7 @@ export function InventoryMovementsTable({
               <th className="px-5 py-3" scope="col">SKU</th>
               <th className="px-5 py-3" scope="col">Product</th>
               <th className="px-5 py-3" scope="col">Location</th>
-              <th className="px-5 py-3" scope="col">Qty</th>
-              <th className="px-5 py-3" scope="col">Before</th>
-              <th className="px-5 py-3" scope="col">After</th>
+              <th className="px-5 py-3" scope="col">Qty Delta</th>
               <th className="px-5 py-3" scope="col">Notes</th>
             </tr>
           </thead>
@@ -121,17 +119,10 @@ export function InventoryMovementsTable({
                 <td className="px-5 py-4">{movement.productName}</td>
                 <td className="px-5 py-4">
                   {movement.locationName}
-                  {movement.toLocationName ? (
-                    <p className="mt-1 text-xs text-zinc-500">
-                      → {movement.toLocationName}
-                    </p>
-                  ) : null}
                 </td>
-                <td className="px-5 py-4">{movement.quantity}</td>
-                <td className="px-5 py-4">{movement.quantity_before}</td>
-                <td className="px-5 py-4">{movement.quantity_after}</td>
+                <td className="px-5 py-4">{movement.quantity_delta}</td>
                 <td className="px-5 py-4 max-w-xs">
-                  {movement.notes ?? "—"}
+                  {movement.note ?? "—"}
                 </td>
               </tr>
             ))}

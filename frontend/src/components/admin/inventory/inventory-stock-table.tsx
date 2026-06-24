@@ -43,7 +43,7 @@ export function InventoryStockTable({ stock }: { stock: InventoryStockItem[] }) 
                 <td className="px-5 py-4">{item.quantity_on_hand}</td>
                 <td className="px-5 py-4">{item.quantity_reserved}</td>
                 <td className="px-5 py-4">{item.availableQuantity}</td>
-                <td className="px-5 py-4">{item.reorder_threshold}</td>
+                <td className="px-5 py-4">{item.reorder_level}</td>
                 <td className="px-5 py-4">
                   <span
                     className={`rounded-full px-2.5 py-1 text-xs font-medium ${
@@ -96,7 +96,7 @@ export function InventoryLowStockTable({ items }: { items: InventoryStockItem[] 
                 <td className="px-5 py-4">{item.productName}</td>
                 <td className="px-5 py-4">{item.locationName}</td>
                 <td className="px-5 py-4">{item.quantity_on_hand}</td>
-                <td className="px-5 py-4">{item.reorder_threshold}</td>
+                <td className="px-5 py-4">{item.reorder_level}</td>
               </tr>
             ))}
           </tbody>

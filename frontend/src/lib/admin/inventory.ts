@@ -61,7 +61,7 @@ export type InventoryStockItem = InventoryRecord & {
   sku: string;
   productName: string;
   availableQuantity: number;
-  reorder_threshold: number;
+  reorder_level: number;
   isLowStock: boolean;
 };
 
@@ -75,14 +75,11 @@ export type InventoryStockListResult = {
 
 export type InventoryMovementRecord = {
   id: string;
-  movement_type: InventoryMovementType;
+  movement_type: string;
   variant_id: string;
   location_id: string;
-  to_location_id: string | null;
-  quantity: number;
-  quantity_before: number;
-  quantity_after: number;
-  notes: string | null;
+  quantity_delta: number;
+  note: string | null;
   created_at: string;
 };
 
@@ -90,7 +87,6 @@ export type InventoryMovementItem = InventoryMovementRecord & {
   sku: string;
   productName: string;
   locationName: string;
-  toLocationName: string | null;
 };
 
 export type InventoryMovementListResult = {
@@ -306,7 +302,7 @@ async function enrichInventoryRows(rows: InventoryRecord[]) {
         ? (productNameById.get(variant.product_id) ?? "Unknown product")
         : "Unknown product",
       availableQuantity,
-      reorder_threshold: row.reorder_level,
+      reorder_level: row.reorder_level,
       isLowStock: availableQuantity <= row.reorder_level,
     } satisfies InventoryStockItem;
   });
@@ -478,7 +474,7 @@ export async function getInventoryMovements({
   let query = supabase
     .from("inventory_movements")
     .select(
-      "id, movement_type, variant_id, location_id, to_location_id, quantity, quantity_before, quantity_after, notes, created_at",
+      "id, movement_type, variant_id, location_id, quantity_delta, note, created_at",
       { count: "exact" },
     )
     .order("created_at", { ascending: false })
@@ -513,11 +509,7 @@ export async function getInventoryMovements({
   }
 
   const locationIds = Array.from(
-    new Set(
-      movements.flatMap((movement) =>
-        [movement.location_id, movement.to_location_id].filter(Boolean),
-      ),
-    ),
+    new Set(movements.map((movement) => movement.location_id).filter(Boolean)),
   ) as string[];
   const variantIds = Array.from(new Set(movements.map((m) => m.variant_id)));
 
@@ -591,9 +583,6 @@ export async function getInventoryMovements({
           : "Unknown product",
         locationName:
           locationNameById.get(movement.location_id) ?? "Unknown location",
-        toLocationName: movement.to_location_id
-          ? (locationNameById.get(movement.to_location_id) ?? "Unknown location")
-          : null,
       };
     }),
     totalCount: count ?? 0,
